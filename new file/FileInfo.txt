@@ -1,0 +1,26 @@
+1 eslPng_105 3x3	welcom to esl		0
+2 fadePNG_292		fade color brite	2	1/2 2/2
+3 marioPNG_31 3x3	mario			0
+4 ONGA_105 3x3		
+5 SYMBOL9x9_7 3x3	symbol			0
+6 fadeAll 3x3		fade color		0	
+7 hammer 2x2		savatdee		3	1/2 2/1 2/2
+8 human 2x2		rainbow			0
+9 dinosaur 2x2		rainbow up		0
+10 CE 30 x 50		*********** Do not open ******************
+11 ESL_LAB 30 x 50	enginer ladtabang	0
+12 KMITL 30 x 50				1 ****
+13 Welcome_Expo 30 x 50				1 ****
+14 Dinosaur					0
+15 KMITL2		enginer ladkabang	0
+16 BG1			color fade from center	1
+17 BG2			color rain		0
+18 BG3			color fade rain		2	1/2 2/2
+19 BG4			color fade to center	0
+20 ESL_LAB2
+21 Welcome_Expo2	embet sys lab @ kmitl	0
+
+for /l %x in (1, 1, 100000000) do (
+   echo s >\\.\COM14
+   timeout 47
+)
