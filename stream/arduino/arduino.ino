@@ -40,9 +40,7 @@ void loop() {
         Serial.println((int)getID());
         break;
       case 'n':
-        int number = in[1];
-        char a = 0;
-        if( number - 100 == getID() ){
+        if( in[1] - 100 == getID() ){
           for (int i = 0; i < 100; i++) {
             int to_i = 9 - i / 10;
             int to_j = to_i % 2 ? i % 10 : 9 - i % 10;
