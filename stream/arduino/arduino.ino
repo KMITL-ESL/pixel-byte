@@ -1,63 +1,87 @@
-#include <FastLED.h>
-
-#define LED_NUM_WIDE 10
-#define LED_NUM_HIGH 10
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#endif
 
 #define LED_PIN A0
 
-CRGB leds[LED_NUM_WIDE * LED_NUM_HIGH];
 const int IDpin[8] = { 3, 5, 4, 2, 9, 7, 6, 8 };
 
+Adafruit_NeoPixel pixels(100, LED_PIN, NEO_RGB + NEO_KHZ800);
+
+uint8_t *Pixels;
+
+uint8_t id;
+
 void setup() {
-  Serial.begin(500000);
+  Serial.begin(1000000);
 
   for (int i = 0; i < 8; i++) {
     pinMode(IDpin[i], INPUT_PULLUP);
   }
   
-  FastLED.addLeds<WS2811, LED_PIN, RGB>(leds, LED_NUM_WIDE * LED_NUM_HIGH);
+  pixels.begin();
 
   for (int i = 0; i < 100; i++) {
-    leds[i].r = 0;
-    leds[i].g = 255;
-    leds[i].b = 0;
+    pixels.setPixelColor(i, pixels.Color(0, 255, 0));
   }
 
-  FastLED.show();
+  Pixels = pixels.getPixels();
+
+  pixels.show();
+
+  id = getID();
 }
+
+char in[5];
+uint8_t x;
+int i;
+
+char mode;
+
+uint8_t to_i;
+uint8_t to_j;
+
+uint8_t *p;
 
 void loop() {
   if (Serial.available()) {
+    x = 0;
+    do {
+      if (x >= 5) x = 0;
+      while (!Serial.available());
+      in[x] = Serial.read();
+    } while (in[x++] != '\n');
     
-    String in = Serial.readStringUntil('\n');
-    char mode = in[0];
-    if (mode == 120) {
-      FastLED.show();
-    }
-    switch(mode) {
-      case 'i':
-        Serial.print("ID : ");
-        Serial.println((int)getID());
-        break;
-      case 'n':
-        if( in[1] - 100 == getID() ){
-          for (int i = 0; i < 100; i++) {
-            int to_i = 9 - i / 10;
-            int to_j = to_i % 2 ? i % 10 : 9 - i % 10;
-            while (!Serial.available());
-            leds[to_i * 10 + to_j].r = Serial.read();
-            while (!Serial.available());
-            leds[to_i * 10 + to_j].g = Serial.read();
-            while (!Serial.available());
-            leds[to_i * 10 + to_j].b = Serial.read();
-          }
-        } else {
-          for (int i = 0; i < 300; i++) {
-            while (!Serial.available());
-            Serial.read();
-          }
+    mode = in[0];
+    if (mode == 'n') {
+      if( in[1] - 100 == id ){
+        for (i = 0; i < 100; i++) {
+          to_i = 9 - i / 10;
+          to_j = to_i % 2 ? i % 10 : 9 - i % 10;
+          
+          p = &Pixels[(to_i * 10 + to_j) * 3];
+          
+          while (!Serial.available());
+          p[0] = Serial.read();
+          
+          while (!Serial.available());
+          p[1] = Serial.read();
+          
+          while (!Serial.available());
+          p[2] = Serial.read();
         }
-        break;
+      } else {
+        for (i = 0; i < 300; i++) {
+          while (!Serial.available());
+          Serial.read();
+        }
+      }
+    }
+    else if (mode == 'x') {
+      pixels.show();
+
+      id = getID();
     }
   }
 }

@@ -23,8 +23,8 @@
 */
 
 void setup() {
-  Serial.begin(500000);
-  Serial1.begin(500000);
+  Serial.begin(1000000);
+  Serial1.begin(1000000);
 }
 
 void loop() {
