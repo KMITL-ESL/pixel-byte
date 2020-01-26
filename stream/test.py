@@ -18,7 +18,7 @@ def show_webcam(ser, mirror=False):
     # print("width", cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     # print("height", cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    prevTime = 0
+    prevTime = time.time()
 
     while True:
         ret_val, img = cam.read()
@@ -41,7 +41,7 @@ def show_webcam(ser, mirror=False):
                         buff[index + 2] = int(color[0] * 0.65)
                 ser.write(buff)
         ser.write([ord('x'), ord('\n')])
-        time.sleep(0.0005)
+        time.sleep(0.002)
 
         while ser.inWaiting():
             a = ser.read_until()
@@ -56,6 +56,8 @@ def show_webcam(ser, mirror=False):
         prevTime = curTime
 
         fps = 1/(sec)
+        # if fps < 2:
+        #     break
 
         str = "FPS : %0.1f" % fps
 
@@ -69,8 +71,8 @@ def show_webcam(ser, mirror=False):
 
 def main():
     ser = serial.Serial()
-    ser.port = 'COM17'
-    ser.baudrate = 1000000
+    ser.port = 'COM13'
+    ser.baudrate = 500000
     ser.bytesize = serial.EIGHTBITS
     ser.stopbits = serial.STOPBITS_ONE
     ser.parity = serial.PARITY_NONE
@@ -79,6 +81,7 @@ def main():
 
     show_webcam(ser=ser, mirror=False)
 
+    ser.close()
 
 if __name__ == '__main__':
     main()
